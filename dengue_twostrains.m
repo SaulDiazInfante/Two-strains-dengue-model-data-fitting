@@ -6,7 +6,7 @@ function Fp = dengue_twostrains(~, F)
 %}
 
 global Lambda_M beta_M beta_H b mu_M Lambda_S mu_H alpha_c alpha_h ...
-        Lambda_m1 Lambda_m2 p q
+        Lambda_m1 Lambda_m2 Sigma p q
 
 Ms = F(1); M1 = F(2); M2 = F(3); Is = F(4);
 I1 = F(5); I2 = F(6); Sm1 = F(7); Sm2 = F(8);
@@ -30,9 +30,9 @@ B1 = cH * M1; B2 = cH * M2;
 Isp = Lambda_S - (B1 + B2) * Is - mu_H * Is;
 I1p = B1 * Is - (alpha_c + mu_H) * I1;
 I2p = B2 * Is - (alpha_c + mu_H) * I2;
-Sm1p = Lambda_m1 - B2 * Sm1 - mu_H * Sm1;
+Sm1p = Lambda_m1 - Sigma * B2 * Sm1 - mu_H * Sm1;
 Sm2p = Lambda_m2 - B1 * Sm2 - mu_H * Sm2;
-Ym1p= B2 * Sm1 - (alpha_h + mu_H) * Ym1;
+Ym1p= Sigma * B2 * Sm1 - (alpha_h + mu_H) * Ym1;
 Ym2p = B1 * Sm2 -(alpha_h + mu_H) * Ym2;
 Rp = alpha_c * (I1+I2) + alpha_h * (Ym1 + Ym2) - mu_H * R;
 %
