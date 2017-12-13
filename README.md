@@ -5,3 +5,5 @@
     Our main script dengue_two_pathogen_strainst.m performs a stochastic search 
     parameters to fitting the data of Denge incidence of 2010 in Hermosillo 
     Sonora.
+    Author coding Daniel Olmnos Liceaga and Saúl Díaz Infante Velasco
+    Universidad de Sonora Dec 2017.
