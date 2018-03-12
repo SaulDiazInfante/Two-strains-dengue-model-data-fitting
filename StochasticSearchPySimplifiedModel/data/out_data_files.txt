@@ -1,0 +1,8 @@
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/incidence_data_DF.csv
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/incidence_data_DHF.csv
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/dengue_data_2010.sqlite
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/frecuency_per_week_DF.dat
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/frecuency_per_week_DHF.dat
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/frecuency_per_day_per_week_FD.dat
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/frecuency_per_day_per_week_FHD.dat
+/home/saul/sauld@cimat.mx/UNISON/Articles/Mosquito-Propagationand-Dengue-Prevalencea-as-Function-of-Temperature/simulation/python_code/StochasticSearchPy/data/dengue_data_2010.sqlite
