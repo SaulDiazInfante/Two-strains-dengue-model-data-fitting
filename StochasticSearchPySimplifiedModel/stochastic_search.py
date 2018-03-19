@@ -18,9 +18,6 @@ class StochasticSearch(NumericOdeSolutionPerWeek):
         self.bound_initial_error_FD = 10
         # Numerics initial parameters
         self.Lambda_M = 7 * 20000.000000
-        self.Lambda_S = 7 * 1.400000
-        self.Lambda_m1 = 7 * 0.015000
-        self.Lambda_m2 = 7 * 0.065000
         self.beta_M = 0.029149
         self.beta_H = 0.030855
         self.b = 7 * 2.095346
@@ -35,13 +32,11 @@ class StochasticSearch(NumericOdeSolutionPerWeek):
         self.M_10 = 20.000000
         self.M_20 = 30.000000
         self.I_s0 = 35600.000000
+        self.I_e0 = 30.0
         self.I_10 = 1.000000
         self.I_20 = 20.000000
-        self.S_m10 = 4400.000000
-        self.S_m20 = 0.0
-        self.Y_m1_c0 = 0.0
-        self.Y_m1_h0 = 0.0
-        self.Y_m2_c0 = 0.0
+        self.S_m1_0 = 4400.000000
+        self.Y_m1 = 100.0
         self.Rec_0 = 0.0
         self.z0 = 1.050000
         self.t0 = 25  # 25.0
@@ -51,6 +46,7 @@ class StochasticSearch(NumericOdeSolutionPerWeek):
         self.r_01 = 0.0
         self.r_02 = 0.0
         self.r_zero = 0
+        self.N_H = 20000.0
         #
         self.t = np.linspace(self.t0, self.T, self.grid_size)
         self.solution = np.zeros([len(self.t), 13])
@@ -78,8 +74,9 @@ class StochasticSearch(NumericOdeSolutionPerWeek):
 
     def fitting_plot(self):
         t = self.t
-        Y_m1_h = self.solution[:, 8]
-        z = self.solution[:, 12]
+        z = self.solution[:, 10]
+        Y_m1_h = self.solution[:, 11]
+        #
         t_data_DF = self.frecuency_per_week_DF[3:, 0]
         t_data_DHF = self.frecuency_per_week_DHF[1:, 0]
         offset = 10000
