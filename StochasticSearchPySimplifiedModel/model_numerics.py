@@ -43,8 +43,8 @@ class NumericOdeSolution:
         self.t = np.linspace(0, self.T, 100000)
         self.solution = np.zeros([len(self.t), 13])
 
-    def f_rhs(self, x, t, Lambda_M, beta_M, beta_H, b, mu_M, alpha_c,
-              alpha_h, sigma, p, theta):
+    def f_rhs(self, x, t, Lambda_M, beta_M, beta_H, b, mu_M,
+                                   alpha_c, alpha_h, sigma, p, theta):
         """
 
         :type alpha_h: float64
@@ -87,7 +87,7 @@ class NumericOdeSolution:
         #
         dY_m1 = sigma * B_M2 * S_m1 - (alpha_c + alpha_h) * Y_m1
         #
-        dR = alpha_c * (I_1 + I_2 + Y_m1) + alpha_c * Y_m1
+        dR = alpha_c * (I_1 + I_2 + Y_m1) + alpha_h * Y_m1
         dz = p * (dI_1 + dI_2 + (1.0 - theta) * dY_m1)
         dY_m1_h = theta * dY_m1
         dydt = np.array([dM_s, dM_I1, dM_I2,
@@ -364,7 +364,7 @@ class NumericOdeSolution:
         return np.sqrt(r_01), np.sqrt(r_02), r_zero
 
     def solution_plot(self):
-
+        """
         M_s = self.solution[:, 0]
         M_1 = self.solution[:, 1]
         M_2 = self.solution[:, 2]
@@ -377,10 +377,21 @@ class NumericOdeSolution:
         recovers = self.solution[:, 9]
         z = self.solution[:, 10]
         Y_m1_h = self.solution[:, 11]
+        """
+        M_s = self.solution[:, 0]
+        M_1 = self.solution[:, 1]
+        M_2 = self.solution[:, 2]
+        I_s = self.solution[:, 3]
+        I_1 = self.solution[:, 4]
+        I_2 = self.solution[:, 5]
+        S_m1 = self.solution[:, 6]
+        Y_m1 = self.solution[:, 7]
+        recovers = self.solution[:, 8]
+        z = self.solution[:, 9]
+        Y_m1_h = self.solution[:, 10]
         #
-
         t = self.t
-        N_H = I_s + I_e + I_1 + I_2 + S_m1 + Y_m1 + recovers
+        N_H = I_s + I_1 + I_2 + S_m1 + Y_m1 + recovers
         #
         f1, ax_array = plt.subplots(4, 3, sharex=True)
         #

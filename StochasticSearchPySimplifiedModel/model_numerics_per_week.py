@@ -49,11 +49,11 @@ class NumericOdeSolutionPerWeek(NumericOdeSolution):
             # Mosquitoes constants
             Lambda_M = 7 * 20000
             beta_M = 0.05  # + 0.45 * np.random.rand()
-            b = 7 * (.5 + 1. * np.random.rand())
+            b = 7 * .5
             mu_M = 7 * 0.02
 
             # Human constants
-            beta_H = 0.05 + 0.45 * np.random.rand()
+            beta_H = 0.05
             # for recovering
             alpha_c = 0.083  # + 0.17 * np.random.rand()) * 7
             alpha_h = alpha_c  # 0.125 * 7
@@ -65,28 +65,28 @@ class NumericOdeSolutionPerWeek(NumericOdeSolution):
 
             # Initial condition mosquitoes
             M_s0 = 100
-            M_10 = 1
-            M_20 = 1
+            M_10 = 0
+            M_20 = 0
 
             # Initial condition humans
 
             # self.N_H = 20000 + 10000 * np.random.rand()
-            I_s0 = self.N_H - 500
-            I_10 = 1
-            I_20 = 1
-            S_m1_0 = 498
+            I_s0 = self.N_H
+            I_10 = 0
+            I_20 = 0
+            S_m1_0 = 0
             #
             Y_m1_0 = 0
             Rec_0 = 0.0
             z0 = p * (I_10 + I_20 + Y_m1_0)
         else:
-            Lambda_M = 7 * np.abs(20000 + 10000 * np.random.randn())
+            Lambda_M = 7 * np.abs(6000 + 2000 * np.random.randn())
             beta_M = 0.05 * np.random.rand()
             b = np.abs(2 + np.random.randn()) * 7
-            mu_M = 7 * (0.02 + 0.09 * np.random.rand())
+            mu_M = 7 * (0.033 + 0.067 * np.random.rand())
 
             # Human constants
-            beta_H = 0.05 + 0.2 * np.random.rand()
+            beta_H = 0.05 * np.random.rand()
             # for recovering
             alpha_c = (0.0556 + .00444 * np.random.rand()) * 7
             alpha_h = (0.125 + 0.125 * np.random.rand()) * 7
@@ -98,11 +98,11 @@ class NumericOdeSolutionPerWeek(NumericOdeSolution):
 
             # Initial condition mosquitoes
             M_s0 = 0.70 * (Lambda_M / mu_M)
-            M_10 = 0.05 * (Lambda_M / mu_M)
-            M_20 = 0.05 * (Lambda_M / mu_M)
+            M_10 = 0.0 # 0.05 * (Lambda_M / mu_M)
+            M_20 = 0.0 # 0.05 * (Lambda_M / mu_M)
 
             # Initial condition humans
-            self.N_H * 20000 + 20000 * np.random.rand()
+            self.N_H = 30000 + 10000 * np.random.rand()
             I_s0 = 0.9 * self.N_H
             I_10 = 0.025 * self.N_H
             I_20 = 0.025 * self.N_H
@@ -110,7 +110,7 @@ class NumericOdeSolutionPerWeek(NumericOdeSolution):
             #
             Y_m1_0 = 0.005 * self.N_H
             Rec_0 = 0.0
-            z0 = p * (I_10 + I_20 + Y_m1_0)
+            z0 = p * (I_10 + I_20 + Y_m1_0 * (1 - theta))
 
         # Numerical parameters
         T = self.T

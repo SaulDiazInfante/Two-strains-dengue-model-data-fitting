@@ -4,7 +4,7 @@ from stochastic_search import StochasticSearch
 import os
 sim = StochasticSearch()
 sim.__init__()
-sim.number_of_samples = 30
+sim.number_of_samples = 100000
 sim.bound_error_FD = 240
 sim.bound_error_FHD = 50
 print '%-5s%-12s%-12s%-12s%-12s%-12s' \
@@ -12,8 +12,9 @@ print '%-5s%-12s%-12s%-12s%-12s%-12s' \
 for i in np.arange(sim.number_of_samples):
     sim.parameters_sampling_per_week(flag_deterministic=False)
     sim.ode_int_solution_exposed_peer_week()
-    sim.solution_plot()
-    sim.fitting_plot()
+    # sim.ode_int_solution_per_week()
+    sim.solution_plot_exposed()
+    sim.fitting_plot_exposed()
     error_DF = sim.fitting_error_DF
     error_DHF = sim.fitting_error_DHF
     r01_per_week, r02_per_week, r0_per_week = sim.compute_r_zero()
