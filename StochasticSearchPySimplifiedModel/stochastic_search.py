@@ -76,7 +76,7 @@ class StochasticSearch():
         self.fitting_error_DHF_cond = fitting_error_DHF_cond
         return stop_condition
 
-    def fitting_plot_exposed(self):
+    def fitting_plot(self):
         t = self.t
         # z = self.solution[:, 10]
         # Y_m1_h = self.solution[:, 11]
@@ -179,6 +179,47 @@ class StochasticSearch():
         plt.tight_layout(pad=0.4, w_pad=0.5, h_pad=1.0)
         plt.savefig('./plots/fitting_DF_DHF.png')
 
+    def fitting_error(self):
+        t = self.t
+        # z = self.solution[:, 10]
+        # Y_m1_h = self.solution[:, 11]
+        Y_m1_h = self.solution[:, 10]
+        z = self.solution[:, 9]
+        #
+        t_data_DF = self.frecuency_per_week_DF[3:, 0]
+        t_data_DHF = self.frecuency_per_week_DHF[1:, 0]
+        offset = 10000
+        #
+        t_z = t[0: -1: offset]
+        t_z = np.round(t_z)
+        t_z = t_z.astype(int)
+        z_points = z[0:-1: offset]
+        #
+        #
+        delete_index_t_z = [0, 1, 6, 9]
+        t_z = np.delete(t_z, delete_index_t_z)
+        z_points = np.delete(z_points, delete_index_t_z)
+        #
+        t_Y_m1_h = t[0: -1: offset]
+        t_Y_m1_h = np.round(t_Y_m1_h)
+        t_Y_m1_h = t_Y_m1_h.astype(int)
+        delte_index_t_Y = [0, 1, 3, 4, 6, 7, 8]
+        t_Y_m1_h = np.delete(t_Y_m1_h, delte_index_t_Y)
+        Y_m1_h_points = Y_m1_h[0: -1: offset]
+        Y_m1_h_points = np.delete(Y_m1_h_points, delte_index_t_Y)
+        #
+        #
+        frecuency_per_week_DF = self.frecuency_per_week_DF[3:, 1]
+        frecuency_per_week_DHF = self.frecuency_per_week_DHF[1:, 1]
+        fitting_error_DF = \
+            np.linalg.norm(frecuency_per_week_DF - z_points, ord=np.inf)\
+            / np.linalg.norm(frecuency_per_week_DF, ord=np.inf)
+        self.fitting_error_DF = fitting_error_DF
+        fitting_error_DHF = \
+            np.linalg.norm(frecuency_per_week_DHF - Y_m1_h_points,
+                           ord=np.inf) / \
+            np.linalg.norm(frecuency_per_week_DHF, ord=np.inf)
+        self.fitting_error_DHF = fitting_error_DHF
 
     def fitting_plot_exposed(self):
 
@@ -868,37 +909,36 @@ class StochasticSearch():
             # Human constants
             beta_H = 0.05 * np.random.rand()
             # for recovering
-            alpha_c = (0.0556 + .00444 * np.random.rand()) * 7
+            alpha_c = (0.0556 + .0444 * np.random.rand()) * 7
             alpha_h = (0.125 + 0.125 * np.random.rand()) * 7
-            kappa_1 = 7 * (0.05 * (0.17 - 0.083) + np.abs(np.random.randn()))
-            kappa_2 = 7 * (0.05 * (0.17 - 0.083) + np.abs(np.random.randn()))
             sigma = 0.5 + 4.5 * np.random.rand()
             p = 0.05
             theta = 0.1 + 0.75 * np.random.rand()
 
             # Initial condition mosquitoes
-            p1 = 0.8 + .19 * np.random.rand()
+            p1 = 0.9 + .1 * np.random.rand()
             pj = np.random.rand(2)
-            pj_hat = (1.0 - p1) / pj.sum() * pj
+            pj_hat = .9 * (1.0 - p1) / pj.sum() * pj
 
             M_s0 = p1 * (Lambda_M / mu_M)
             M_10 = pj_hat[0] * (Lambda_M / mu_M)
             M_20 = pj_hat[1] * (Lambda_M / mu_M)
 
             # Initial condition humans
-            self.N_H = 35000 + 5000 * np.random.rand()
+            self.N_H = 37000 + 5000 * np.random.rand()
             # partition
-            p1 = 0.90 + .1 * np.random.rand()
-            pj = np.random.rand(4)
-            pj_hat = (1.0 - p1) / pj.sum() * pj
+            p1 = 0.8 + .15 * np.random.rand()
+            pj = 1 - p1
 
-            I_s0 = p1 * self.N_H
-            I_10 = pj_hat[0] * self.N_H
-            I_20 = pj_hat[1] * self.N_H
-            S_m1_0 = pj_hat[2] * self.N_H
+            I_10 = 1.0
+            I_20 = 1.0
+            Y_m1_0 = 1.0
             #
             #
-            Y_m1_0 = 0.005 * self.N_H
+            I_s0 = p1 * (self.N_H - (I_10 + I_20 + Y_m1_0))
+            S_m1_0 = pj * self.N_H
+            #
+            #
             Rec_0 = 0.0
             z0 = p * (I_10 + I_20 + Y_m1_0 * (1 - theta))
 
@@ -914,8 +954,6 @@ class StochasticSearch():
         self.mu_M = mu_M
         self.alpha_c = alpha_c
         self.alpha_h = alpha_h
-        self.kappa_1 = kappa_1
-        self.kappa_2 = kappa_2
         self.sigma = sigma
         self.p = p
         self.theta = theta
@@ -938,7 +976,7 @@ class StochasticSearch():
         self.T = T
         #
         new_parameters = [Lambda_M, beta_M,
-                          beta_H, b, mu_M, alpha_c, alpha_h, kappa_1, kappa_2,
+                          beta_H, b, mu_M, alpha_c, alpha_h,
                           sigma, p, theta, M_s0, M_10, M_20, I_s0, I_10, I_20,
                           S_m1_0, Y_m1_0, Rec_0, z0, h, T]
         new_parameters = np.array(new_parameters)
