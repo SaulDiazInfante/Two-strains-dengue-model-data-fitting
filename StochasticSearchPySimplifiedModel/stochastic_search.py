@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 
 
 class StochasticSearch():
-
     def __init__(self):
         self.number_of_samples = 30
         self.frecuency_per_week_DF = \
@@ -32,6 +31,8 @@ class StochasticSearch():
         self.p = 0.050000
         self.theta = 0.450000
         self.kappa = 0.17
+        self.rho_1 = .8
+        self.rho_2 = .1
         self.M_s0 = 120000.000000
         self.M_10 = 20.000000
         self.M_20 = 30.000000
@@ -67,8 +68,8 @@ class StochasticSearch():
         fitting_error_DF_cond = (self.fitting_error_DF < self.bound_error_FD)
         fitting_error_DHF_cond = (self.fitting_error_DHF
                                   < self.bound_error_FHD)
-        stop_condition = (fitting_error_DF_cond and fitting_error_DHF_cond) \
-                         and r_zero_cond
+        stop_condition = (fitting_error_DF_cond or fitting_error_DHF_cond) \
+                        and r_zero_cond
 
         self.stop_condition = stop_condition
         self.r_zero_cond = r_zero_cond
@@ -212,7 +213,7 @@ class StochasticSearch():
         frecuency_per_week_DF = self.frecuency_per_week_DF[3:, 1]
         frecuency_per_week_DHF = self.frecuency_per_week_DHF[1:, 1]
         fitting_error_DF = \
-            np.linalg.norm(frecuency_per_week_DF - z_points, ord=np.inf)\
+            np.linalg.norm(frecuency_per_week_DF - z_points, ord=np.inf) \
             / np.linalg.norm(frecuency_per_week_DF, ord=np.inf)
         self.fitting_error_DF = fitting_error_DF
         fitting_error_DHF = \
@@ -220,6 +221,49 @@ class StochasticSearch():
                            ord=np.inf) / \
             np.linalg.norm(frecuency_per_week_DHF, ord=np.inf)
         self.fitting_error_DHF = fitting_error_DHF
+
+    def fitting_error_exposed(self):
+
+        t = self.t
+        z = self.solution[:, 10]
+        Y_m1_h = self.solution[:, 11]
+        #
+        t_data_DF = self.frecuency_per_week_DF[3:, 0]
+        t_data_DHF = self.frecuency_per_week_DHF[1:, 0]
+        offset = 10000
+        #
+        t_z = t[0: -1: offset]
+        t_z = np.round(t_z)
+        t_z = t_z.astype(int)
+        z_points = z[0:-1: offset]
+
+        #
+        delete_index_t_z = [0, 1, 6, 9]
+        t_z = np.delete(t_z, delete_index_t_z)
+        z_points = np.delete(z_points, delete_index_t_z)
+        #
+        t_Y_m1_h = t[0: -1: offset]
+        t_Y_m1_h = np.round(t_Y_m1_h)
+        t_Y_m1_h = t_Y_m1_h.astype(int)
+        delte_index_t_Y = [0, 1, 3, 4, 6, 7, 8]
+        t_Y_m1_h = np.delete(t_Y_m1_h, delte_index_t_Y)
+        Y_m1_h_points = Y_m1_h[0: -1: offset]
+        Y_m1_h_points = np.delete(Y_m1_h_points, delte_index_t_Y)
+
+        #
+        frecuency_per_week_DF = self.frecuency_per_week_DF[3:, 1]
+        frecuency_per_week_DHF = self.frecuency_per_week_DHF[1:, 1]
+        fitting_error_DF = \
+            np.linalg.norm(frecuency_per_week_DF - z_points, ord=np.inf) / \
+            np.linalg.norm(frecuency_per_week_DF, ord=np.inf)
+        self.fitting_error_DF = fitting_error_DF
+        fitting_error_DHF = \
+            np.linalg.norm(frecuency_per_week_DHF \
+                           - Y_m1_h_points, ord=np.inf) / \
+            np.linalg.norm(frecuency_per_week_DHF, ord=np.inf)
+        self.fitting_error_DHF = fitting_error_DHF
+        #
+        #
 
     def fitting_plot_exposed(self):
 
@@ -421,8 +465,8 @@ class StochasticSearch():
         A_Ym1 = c_M * Y_m1
         B_M1 = c_H * M_I1
         B_M2 = c_H * M_I2
-        rho_1 = .7
-        rho_2 = .2
+        rho_1 = self.rho_1
+        rho_2 = self.rho_2
         # rhs of the ODE model
         dM_s = Lambda_M - (A_I1 + A_I2 + A_Ym1) * M_s \
                - mu_M * M_s
@@ -440,7 +484,6 @@ class StochasticSearch():
         #
         dR = alpha_c * (I_1 + I_2 + Y_m1)
         dz = 0.05 * (dI_1 + dI_2 + (1.0 - theta) * dY_m1)
-        # dz = p * (kappa_1 + kappa_2) * I_e
         dY_m1_h = theta * dY_m1
         dydt = np.array([dM_s, dM_I1, dM_I2,
                          dI_s, dI_e, dI_1, dI_2,
@@ -879,8 +922,7 @@ class StochasticSearch():
             alpha_c = 0.083
             alpha_h = alpha_c
             sigma = 2.5
-            kappa_1 = 0.83
-            kappa_2 = 0.83
+
             p = 0.05
             theta = 0.01
             #
@@ -914,7 +956,8 @@ class StochasticSearch():
             sigma = 0.5 + 4.5 * np.random.rand()
             p = 0.05
             theta = 0.1 + 0.75 * np.random.rand()
-
+            rho_1 = .6 + .2 * np.random.rand()
+            rho_2 = .8 - rho_1
             # Initial condition mosquitoes
             p1 = 0.9 + .1 * np.random.rand()
             pj = np.random.rand(2)
@@ -957,6 +1000,8 @@ class StochasticSearch():
         self.sigma = sigma
         self.p = p
         self.theta = theta
+        self.rho_1 = rho_1
+        self.rho_2 = rho_2
         #
         self.M_s0 = M_s0
         self.M_10 = M_10
